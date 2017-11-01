@@ -19,12 +19,31 @@ const MODULE_REQUIRE = 1
     , getCallerPackageDir = require('./lib/getCallerPackageDir')
     ;
 
+    
+/**
+ * Return the package.json object of the package in which the caller is located.
+ * @return {object}
+ */
 let currentPackage = function() {
     // Find home directory of the package in which the caller is located.
     let dirname = getCallerPackageDir();
 
     // Return the meta json of the package.
     return require(dirname + '/package.json');
+};
+
+/**
+ * Whether file/directory exists in the package in which the caller is located.
+ * @param {string}   subpath          path relative to the homedir of current package
+ * @return {boolean}
+ */
+let inExists = function(subpath) {
+    // Find home directory of the package in which the caller is located.
+    let dirname = getCallerPackageDir();
+    let pathname = path.join(dirname, subpath); 
+    
+    let ret = fs.existsSync(pathname);
+    return ret;
 };
 
 /**
@@ -119,6 +138,10 @@ let inResolve = (subpath) => {
  * @param {string} dirname 
  */
 let osRequire = (dirname) => {
+    if (!path.isAbsolute(dirname)) {
+        dirname = path.resolve(path.dirname(getCallerFileName()), dirname);
+    }
+
     try {
         return require(path.join(dirname, os.platform()));
     }
@@ -139,6 +162,10 @@ let osRequire = (dirname) => {
  * @return {Object}
  */
 let requireDir = (dirname, excludes) => {
+    if (!path.isAbsolute(dirname)) {
+        dirname = path.resolve(path.dirname(getCallerFileName()), dirname);
+    }
+    
     // Uniform the argument "excludes".
     if (util.isUndefined(excludes)) {
         excludes = [ 'index' ];
@@ -154,10 +181,12 @@ let requireDir = (dirname, excludes) => {
         let pathname = path.join(dirname, name);
         let modname = null;
         
-        if (path.extname(name) === '.js') {
+        if (!excludes.includes['*'] && path.extname(name) === '.js') {
             modname = name.replace(/\.js$/, '');
         }
-        else if (fs.statSync(pathname).isDirectory() && fs.existsSync(path.join(pathname, 'index.js'))) {
+        else if (fs.statSync(pathname).isDirectory() 
+            && !excludes.includes('*/')
+            && fs.existsSync(path.join(pathname, 'index.js'))) {
             modname = name;
         }
 
@@ -178,12 +207,14 @@ let inRequireDir = (dirname, excludes) => {
 
 module.exports = {
     currentPackage,
+    inExists,
     inRead,
     inRequire,
     inRequireDir,
     inResolve,
     osRequire,
     requireDir,
+    'existsInPackage': inExists,
     'readInPackage': inRead,
     'requireInPackage': inRequire,
     'requireDirInPackage': inRequireDir,
