@@ -35,9 +35,9 @@ const lib = noda.requireDir('./lib');
 
 ##	API
 
-Before read APIs, please understand that
-0.  The phrase "current package" refers to the NPM package which contains the nodejs file where code `noda.*` located.
-0.  Parameter `subpath` refers to pathname relative to the basepath of "current package".
+Before read APIs, please understand that 
+1.  The phrase "current package" refers to the NPM package which contains the nodejs file where code `noda.*` located.
+2.  Parameter `subpath` refers to pathname relative to the basepath of "current package".
 
 *	__noda.currentPackage__()  
     Return the object parsed from package.json which belongs to current package.
