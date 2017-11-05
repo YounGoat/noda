@@ -52,7 +52,7 @@ Before read APIs, please understand that
 *	__noda.inRequire__(*string* subpath)  
     Require js or json.
 
-*	__noda.inRequireDir__(*string* dirname, *Array* ignores)  
+*	__noda.inRequireDir__(*string* dirname, *Array* | *string* ignores)  
     Based on requireDir(), but the dirname is regarded as relative path to home directory of the package in which the caller is located. 
     
     __ignores__ includes those that SHOULD NOT be required. If `'*/'` contained in __ignores__, all sub directories will not be required whether or not *index.js* exists in the sub directories. If `'*'` contained in __ignores__, all .js files will not be required.
@@ -63,8 +63,9 @@ Before read APIs, please understand that
 *	__noda.osRequire__(*string* dirname)  
     Require module whose name is same with the name of current platform. Relative __dirname__ is acceptable.
 
-*	__noda.requireDir__(*string* dirname, *Array* excludes)  
-    Read the directory and require all javascript modules except those excluded, and returned them in an object with keys equal to modules' name. Relative __dirname__ is acceptable.
+*	__noda.requireDir__(*string* dirname, *Array* | *string* ignores)  
+    Read the directory and require all javascript modules except those excluded, and returned them in an object with keys equal to modules' name. Relative __dirname__ is acceptable.  
+    ATTENTION：__Directory "node_modules" is always ignored whether or not it is explictly added in `ignores`.__
 
 *   __noda.existsInPackage__  
     Alias of `noda.inExists`.
@@ -82,6 +83,35 @@ Before read APIs, please understand that
     Alias of `noda.inResolve`.
 
 ##  Examples
+
+Suppose that there is an NPM package named *ching*:
+
+```
++ ching
+  + bin
+  + command
+  + lib
+  + node_modules
+  + util
+  . CHANGELOG.md
+  . conf.js
+  . index.js
+  . package.json
+  . README.md
+```
+
+Let's see what __noda__ can do.
+
+```javascript
+// FILE: ching/command/init/index.js
+const noda = require('noda');
+
+// Read ching/package.json and return the parsed JSON object.
+noda.currentPackage();
+
+// Require ching/util/rc.js and return.
+noda.inRequire('util/rc');
+```
 
 ##  Why *noda*
 

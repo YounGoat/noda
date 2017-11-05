@@ -157,8 +157,10 @@ let osRequire = (dirname) => {
 
 /**
  * Read the directory and require all javascript modules except those excluded.
+ * ATTENTION: Directory 'node_modules' is always excluded.
  * @param  {string}  dirname
- * @param  {Array}  [excludes = ['index']]
+ * @param  {Array}  [excludes = ['index']]  names to be excluded(ignored)
+ * @param  {string} [exlucdes]              the only name to be excluded(ingored)
  * @return {Object}
  */
 let requireDir = (dirname, excludes) => {

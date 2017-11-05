@@ -1,12 +1,16 @@
 {
     "name": "noda",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "NOde Developing Assistant",
     "main": "index.js",
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1"
     },
-    "keywords": [],
+    "keywords": [
+        "require",
+        "require-all",
+        "package-homepath"
+    ],
     "author": {
         "name": "YounGoat",
         "email": "youngoat@163.com",
