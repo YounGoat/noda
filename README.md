@@ -42,8 +42,8 @@ Before read APIs, please understand that
 *	__noda.currentPackage__()  
     Return the object parsed from package.json which belongs to current package.
 
-*	__noda.inExists__(*string* subpath)  
-    Judge whether file or directory exists.  
+*	__noda.inExists__(*string* subpath, *boolean* resolveAsModule)  
+    Judge whether file or directory exists. If __resolveAsModule__ set `true`, __subpath__ will be tentatively regarded as JS/JSON module path in the current package when the exact file not exists.  
     This method is __synchronuous__.
 
 *	__noda.inRead__(*string* subpath [, *string* encoding, *boolean* nullIfNotFound ])  
@@ -86,7 +86,7 @@ Before read APIs, please understand that
 
 Suppose that there is an NPM package named *ching*:
 
-```
+```code
 + ching
   + bin
   + command

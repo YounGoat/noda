@@ -2,9 +2,11 @@
 
 Notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning 2.0.0](http://semver.org/).
 
-##  [0.1.1] - 2017-11-05
+##  [0.1.2] - 2017-11-20
 
-### Changed
+*   `noda.inExists(subpath)` is extended to `noda.inExists(subpath, resolveAsModule)`. Of course, the extended parameter __resolveAsModule__ is set false by default.
+
+##  [0.1.1] - 2017-11-05
 
 *   For `noda.requireDir()` and `noda.inRequireDir()`, d irectory "node_modules" is always ignored whether or not it is explictly added in `ignores`.
 

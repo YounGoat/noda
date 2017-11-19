@@ -35,14 +35,31 @@ let currentPackage = function() {
 /**
  * Whether file/directory exists in the package in which the caller is located.
  * @param {string}   subpath          path relative to the homedir of current package
+ * @param {boolean}  resolveAsModule  try to resolve the subpath as it is a module
  * @return {boolean}
  */
-let inExists = function(subpath) {
+let inExists = function(subpath, resolveAsModule) {
+    if (arguments.length == 1) {
+        resolveAsModule = false;
+    }
+
     // Find home directory of the package in which the caller is located.
     let dirname = getCallerPackageDir();
     let pathname = path.join(dirname, subpath); 
     
-    let ret = fs.existsSync(pathname);
+    let ret;
+    
+    if (resolveAsModule) {
+        ret = fs.existsSync(pathname) 
+            || fs.existsSync(`${pathname}.js`) 
+            || fs.existsSync(`${pathname}.json`)
+            || fs.existsSync(path.join(pathname, 'index.js'))
+            || fs.existsSync(path.join(pathname, 'index.json'))
+            ;
+    }
+    else {
+        ret = fs.existsSync(pathname);
+    }
     return ret;
 };
 
