@@ -21,9 +21,9 @@
     "dependencies": {},
     "devDependencies": {},
     "directories": {},
-    "homepage": "https://github.com/YounGoat/noda",
+    "homepage": "https://github.com/YounGoat/nnoda",
     "repository": {
         "type": "git",
-        "url": "https://github.com/YounGoat/noda.git"
+        "url": "https://github.com/YounGoat/nnoda.git"
     }
 }
