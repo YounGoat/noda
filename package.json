@@ -16,6 +16,9 @@
         "email": "youngoat@163.com",
         "url": "https://youngoat.github.io"
     },
+    "engines": {
+        "node": ">=6"        
+    },
     "license": "ISC",
     "bin": {},
     "dependencies": {},

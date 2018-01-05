@@ -2,6 +2,9 @@
 
 Notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning 2.0.0](http://semver.org/).
 
+##  [0.2.0] - Dec 3, 2017
+
+
 ##  [0.1.2] - 2017-11-20
 
 *   `noda.inExists(subpath)` is extended to `noda.inExists(subpath, resolveAsModule)`. Of course, the extended parameter __resolveAsModule__ is set false by default.
