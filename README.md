@@ -1,15 +1,13 @@
 #	noda
 __NOde Developing Assistant__
 
+__noda__ is a very lower-level package which will help you easily accessing files and directories in your package.
+
 ##	Table of contents
 
 *	[Get Started](#get-started)
 *	[API](#api)
 * 	[Examples](#examples)
-*	[Why noda](#why-noda)
-*	[Honorable Dependents](#honorable-dependents)
-*	[About](#about)
-*	[References](#references)
 
 ##	Links
 
@@ -35,51 +33,57 @@ const lib = noda.requireDir('./lib');
 
 ##	API
 
-Before read APIs, please understand that 
+Before read APIs, please understand that
 1.  The phrase "current package" refers to the NPM package which contains the nodejs file where code `noda.*` located.
 2.  Parameter `subpath` refers to pathname relative to the basepath of "current package".
 
 *	__noda.currentPackage__()  
     Return the object parsed from package.json which belongs to current package.
 
-*	__noda.inExists__(*string* subpath, *boolean* resolveAsModule)  
-    Judge whether file or directory exists. If __resolveAsModule__ set `true`, __subpath__ will be tentatively regarded as JS/JSON module path in the current package when the exact file not exists.  
+*	__noda.inExists__(string *subpath*, boolean *resolveAsModule*)  
+    Judge whether file or directory exists. If __resolveAsModule__ set `true`, __subpath__ will be tentatively regarded as JS/JSON module path in the current package when the exact file not exists.
     This method is __synchronuous__.
 
-*	__noda.inRead__(*string* subpath [, *string* encoding, *boolean* nullIfNotFound ])  
+*	__noda.inRead__(string *subpath* [, string *encoding*, boolean *nullIfNotFound* ])  
     Read content of file.
 
-*	__noda.inRequire__(*string* subpath)  
+*	__noda.inRequire__(string *subpath*)  
     Require js or json.
 
-*	__noda.inRequireDir__(*string* dirname, *Array* | *string* ignores)  
-    Based on requireDir(), but the dirname is regarded as relative path to home directory of the package in which the caller is located. 
-    
+*	__noda.inRequireDir__(string *dirname*, Array | string *ignores*)  
+    Based on requireDir(), but the dirname is regarded as relative path to home directory of the package in which the caller is located.  
     __ignores__ includes those that SHOULD NOT be required. If `'*/'` contained in __ignores__, all sub directories will not be required whether or not *index.js* exists in the sub directories. If `'*'` contained in __ignores__, all .js files will not be required.
 
-*	__noda.inResolve__(*string* subpath)  
+*	__noda.inResolve__(string *subpath*)  
     Resolve the subpath into an absolute path.
 
-*	__noda.osRequire__(*string* dirname)  
+*	__noda.osRequire__(string *dirname*)  
     Require module whose name is same with the name of current platform. Relative __dirname__ is acceptable.
 
-*	__noda.requireDir__(*string* dirname, *Array* | *string* ignores)  
+*	__noda.requireDir__(string *dirname*, Array | string *ignores*)  
     Read the directory and require all javascript modules except those excluded, and returned them in an object with keys equal to modules' name. Relative __dirname__ is acceptable.  
     ATTENTION：__Directory "node_modules" is always ignored whether or not it is explictly added in `ignores`.__
+ 
+*   __noda.upResolve__(string *pathname*)  
+    Find sub-directory or file in ascent directory and return the full path.
 
-*   __noda.existsInPackage__  
+*   __noda.downResolve__(string *pathname* [, number *depth*, string *order* ])  
+    Find sub-directory or file in descent directory and return the full path.
+    The value of *order* may be `DFS` (means depth-first search) or `BFS` (means breadth-first search).
+
+*   __noda.existsInPackage__
     Alias of `noda.inExists`.
 
-*   __noda.readInPackage__  
+*   __noda.readInPackage__
     Alias of `noda.inRead`.
 
-*   __noda.requireInPackage__  
+*   __noda.requireInPackage__
     Alias of `noda.inRequire`.
 
-*   __noda.requireDirInPackage__  
+*   __noda.requireDirInPackage__
     Alias of `noda.inRequireDir`.
 
-*   __noda.resolveInPackage__  
+*   __noda.resolveInPackage__
     Alias of `noda.inResolve`.
 
 ##  Examples
@@ -112,11 +116,3 @@ noda.currentPackage();
 // Require ching/util/rc.js and return.
 noda.inRequire('util/rc');
 ```
-
-##  Why *noda*
-
-##  Honorable Dependents
-
-##  About
-
-##  References

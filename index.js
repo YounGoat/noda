@@ -11,15 +11,17 @@ const MODULE_REQUIRE = 1
     , os = require('os')
     , path = require('path')
     , util = require('util')
-    
+
     /* NPM */
-    
+
     /* in-package */
+    , findInDirectory = require('./lib/findInDirectory')
     , getCallerFileName = require('./lib/getCallerFileName')
     , getCallerPackageDir = require('./lib/getCallerPackageDir')
+    , getCallerDir = () => path.dirname(getCallerFileName(1))
     ;
 
-    
+
 /**
  * Return the package.json object of the package in which the caller is located.
  * @return {object}
@@ -45,13 +47,13 @@ let inExists = function(subpath, resolveAsModule) {
 
     // Find home directory of the package in which the caller is located.
     let dirname = getCallerPackageDir();
-    let pathname = path.join(dirname, subpath); 
-    
+    let pathname = path.join(dirname, subpath);
+
     let ret;
-    
+
     if (resolveAsModule) {
-        ret = fs.existsSync(pathname) 
-            || fs.existsSync(`${pathname}.js`) 
+        ret = fs.existsSync(pathname)
+            || fs.existsSync(`${pathname}.js`)
             || fs.existsSync(`${pathname}.json`)
             || fs.existsSync(path.join(pathname, 'index.js'))
             || fs.existsSync(path.join(pathname, 'index.json'))
@@ -66,8 +68,8 @@ let inExists = function(subpath, resolveAsModule) {
 /**
  * Read file in the package in which the caller is located.
  * @param {string}   subpath          path relative to the homedir of current package
- * @param {string}  [encoding]        
- * @param {boolean} [nullIfNotFound]  
+ * @param {string}  [encoding]
+ * @param {boolean} [nullIfNotFound]
  * @return {string|Buffer}
  */
 let inRead = function(subpath, encoding, nullIfNotFound) {
@@ -90,8 +92,8 @@ let inRead = function(subpath, encoding, nullIfNotFound) {
 
     // Find home directory of the package in which the caller is located.
     let dirname = getCallerPackageDir();
-    let pathname = path.join(dirname, subpath); 
-    
+    let pathname = path.join(dirname, subpath);
+
     let ret = null;
     if (!fs.existsSync(pathname)) {
         if (!nullIfNotFound) {
@@ -107,16 +109,16 @@ let inRead = function(subpath, encoding, nullIfNotFound) {
 
 /**
  * To require some sub module in same package with fixed subpath wherever the caller is located.
- * 
+ *
  * @example
  * // PACKAGE_HOMEDIR/lib/index.js
- * 
+ *
  * // PACKAGE_HOMEDIR/foo.js
  * noda.inRequire('lib');
- * 
+ *
  * // PACKAGE_HOMEDIR/foo/bar.js
  * noda.inRequire('lib');
- * 
+ *
  * @param {string} subpath sub module's path relative to the home directory of the package in which the caller is located.
  */
 let inRequire = function(subpath, nullIfNotFound) {
@@ -139,7 +141,7 @@ let inRequire = function(subpath, nullIfNotFound) {
 };
 
 /**
- * Resolve the subpath into an absolute path. 
+ * Resolve the subpath into an absolute path.
  * The subpath is relative to the home directory of the package in which the caller is located.
  * @param {string} subpath subpath relative to the home directory of the package in which the caller is located.
  */
@@ -152,11 +154,11 @@ let inResolve = (subpath) => {
 
 /**
  * Require module whose name is same with the name of current platform.
- * @param {string} dirname 
+ * @param {string} dirname
  */
 let osRequire = (dirname) => {
     if (!path.isAbsolute(dirname)) {
-        dirname = path.resolve(path.dirname(getCallerFileName()), dirname);
+        dirname = path.resolve(getCallerDir(), dirname);
     }
 
     try {
@@ -182,9 +184,9 @@ let osRequire = (dirname) => {
  */
 let requireDir = (dirname, excludes) => {
     if (!path.isAbsolute(dirname)) {
-        dirname = path.resolve(path.dirname(getCallerFileName()), dirname);
+        dirname = path.resolve(getCallerDir(), dirname);
     }
-    
+
     // Uniform the argument "excludes".
     if (util.isUndefined(excludes)) {
         excludes = [ 'index' ];
@@ -199,11 +201,11 @@ let requireDir = (dirname, excludes) => {
     fs.readdirSync(dirname).forEach((name) => {
         let pathname = path.join(dirname, name);
         let modname = null;
-        
+
         if (!excludes.includes['*'] && path.extname(name) === '.js') {
             modname = name.replace(/\.js$/, '');
         }
-        else if (fs.statSync(pathname).isDirectory() 
+        else if (fs.statSync(pathname).isDirectory()
             && !excludes.includes('*/')
             && fs.existsSync(path.join(pathname, 'index.js'))) {
             modname = name;
@@ -224,6 +226,62 @@ let inRequireDir = (dirname, excludes) => {
     return requireDir(dirname, excludes);
 };
 
+/**
+ * Find sub-directory or file in ascent directory and return the full path.
+ * @param {string} pathname relative pathname of sub-directory or file
+ * @return {string}
+ */
+let upResolve = (pathname) => {
+    let cwd = getCallerDir();
+    let realPathname = null;
+    for (let d = null; d != cwd && !realPathname; cwd = path.dirname(cwd)) {
+        let p = path.join(cwd, pathname);
+        if (fs.existsSync(p)) realPathname = p;
+        else d = cwd;
+    }
+    return realPathname;
+};
+
+/**
+ * Find sub-directory or file in descent directory and return the full path.
+ * @param {string}  pathname     - relative pathname of sub-directory or file
+ * @param {number} [depth=9]     - max depth to search
+ * @param {string} [order=bfs]   - DFS (Depth-First Search) or BFS (Breadth-First Search)
+ * @return {string}
+ */
+let downResolve = function(pathname) {
+    let depth = null, order = null;
+    for (let i = 1, arg; i < arguments.length; i++) {
+        switch (typeof arguments[i]) {
+            case 'number':
+                if (depth === null) depth = arguments[i];
+                else throw new Error(`duplicated arguments: {number} depth`);
+                break;
+            case 'string':
+                if (order === null) order = arguments[i];
+                else throw new Error(`duplicated arguments: {string} order`);
+                break;
+            default:
+                if (!util.isUndefined(arguments[i]) && arguments[i] !== null) {
+                    throw new Error(`unrecognized argument: ${arguments[i]}`);
+                }
+        }
+    }
+
+    if (depth === null) depth = 9;
+    if (order === null) order = 'bfs';
+
+    order = order.toLowerCase();
+    let cwd = getCallerDir();
+    if (order == 'dfs') {
+        return findInDirectory.depth_first(cwd, pathname, depth);
+    }
+    if (order == 'bfs') {
+        return findInDirectory.breadth_first(cwd, pathname, depth);
+    }
+    throw new Error(`invalid order: ${order}`);
+};
+
 module.exports = {
     currentPackage,
     inExists,
@@ -233,6 +291,8 @@ module.exports = {
     inResolve,
     osRequire,
     requireDir,
+    upResolve,
+    downResolve,
     'existsInPackage': inExists,
     'readInPackage': inRead,
     'requireInPackage': inRequire,
