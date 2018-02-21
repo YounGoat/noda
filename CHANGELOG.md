@@ -2,6 +2,11 @@
 
 Notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning 2.0.0](http://semver.org/).
 
+##	[0.3.0] - Feb 21st, 2018
+
+*	`noda.inReaddir()` added.
+*	`noda.nextRead()` added.
+
 ##  [0.2.0] - Feb 1st, 2018
 
 *	`noda.upResolve()` added.

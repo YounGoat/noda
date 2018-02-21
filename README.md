@@ -1,7 +1,7 @@
 #	noda
 __NOde Developing Assistant__
 
-__noda__ is a very lower-level package which will help you easily accessing files and directories in your package.
+__noda__ is a very lower-level package which will help you easily accessing files and directories in your package or adjacent to your Node.js file.
 
 ##	Table of contents
 
@@ -35,7 +35,10 @@ const lib = noda.requireDir('./lib');
 
 Before read APIs, please understand that
 1.  The phrase "current package" refers to the NPM package which contains the nodejs file where code `noda.*` located.
-2.  Parameter `subpath` refers to pathname relative to the basepath of "current package".
+1.  Parameter `subpath` refers to pathname relative to the basepath of "current package".
+1.  Because all functions are synchronous, postfix `Sync` is omitted.
+1.  For functions with name prefixed with preposition *in*, the scope is "current package". E.g. `noda.inRead()` will read a file in current package.
+1.  For functions with name prefixed with preposition *next*, *up* and *down*, the scope is "current file". E.g. `noda.nextRead()` will read a file adjacent to current file.
 
 *	__noda.currentPackage__()  
     Return the object parsed from package.json which belongs to current package.
@@ -47,6 +50,9 @@ Before read APIs, please understand that
 *	__noda.inRead__(string *subpath* [, string *encoding*, boolean *nullIfNotFound* ])  
     Read content of file.
 
+*	__noda.inReaddir__(string *subpath*)  
+    Read the contents of a directory.
+
 *	__noda.inRequire__(string *subpath*)  
     Require js or json.
 
@@ -56,6 +62,9 @@ Before read APIs, please understand that
 
 *	__noda.inResolve__(string *subpath*)  
     Resolve the subpath into an absolute path.
+
+*   __noda.nextRead__(string *subpath* [, string *encoding*, boolean *nullIfNotFound* ])  
+    Read content of file.
 
 *	__noda.osRequire__(string *dirname*)  
     Require module whose name is same with the name of current platform. Relative __dirname__ is acceptable.

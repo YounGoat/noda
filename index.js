@@ -108,6 +108,19 @@ let inRead = function(subpath, encoding, nullIfNotFound) {
 }
 
 /**
+ * Read the contents of a directory.
+ * @param {string}   subpath          path relative to the homedir of current package
+ * @return {string[]}
+ */
+let inReaddir = function(subpath) {
+    // Find home directory of the package in which the caller is located.
+    let dirname = getCallerPackageDir();
+    let pathname = path.join(dirname, subpath);
+    
+    return fs.readdirSync(pathname);
+};
+
+/**
  * To require some sub module in same package with fixed subpath wherever the caller is located.
  *
  * @example
@@ -227,6 +240,48 @@ let inRequireDir = (dirname, excludes) => {
 };
 
 /**
+ * Read file next to the file in which the caller is located.
+ * @param {string}   subpath          path relative to the directory of the caller file
+ * @param {string}  [encoding]
+ * @param {boolean} [nullIfNotFound]
+ * @return {string|Buffer}
+ */
+let nextRead = function(subpath, encoding, nullIfNotFound) {
+    if (arguments.length == 3) {
+        // DO NOTHING.
+    }
+    else if (arguments.length == 2) {
+        if (typeof arguments[1] == 'boolean') {
+            encoding = null;
+            nullIfNotFound = arguments[1];
+        }
+        else if (typeof arguments[1] == 'string') {
+            encoding = arguments[1];
+            nullIfNotFound = false;
+        }
+        else {
+            throw new Error('The second argument should be a string (encoding) or boolean (nullIfNotFound) value.');
+        }
+    }
+
+    // Find the directory of the file in which the caller is located.
+    let dirname = getCallerDir();
+    let pathname = path.join(dirname, subpath);
+
+    let ret = null;
+    if (!fs.existsSync(pathname)) {
+        if (!nullIfNotFound) {
+            throw new Error(`File not found: ${pathname}`);
+        }
+    }
+    else {
+        ret = fs.readFileSync(pathname, encoding);
+    }
+
+    return ret;
+}
+
+/**
  * Find sub-directory or file in ascent directory and return the full path.
  * @param {string} pathname relative pathname of sub-directory or file
  * @return {string}
@@ -286,13 +341,19 @@ module.exports = {
     currentPackage,
     inExists,
     inRead,
+    inReaddir,
     inRequire,
     inRequireDir,
     inResolve,
+
+    nextRead,
+    
     osRequire,
     requireDir,
+
     upResolve,
     downResolve,
+    
     'existsInPackage': inExists,
     'readInPackage': inRead,
     'requireInPackage': inRequire,
