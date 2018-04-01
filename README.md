@@ -40,6 +40,10 @@ Before read APIs, please understand that
 1.  For functions with name prefixed with preposition *in*, the scope is "current package". E.g. `noda.inRead()` will read a file in current package.
 1.  For functions with name prefixed with preposition *next*, *up* and *down*, the scope is "current file". E.g. `noda.nextRead()` will read a file adjacent to current file.
 
+*   __noda.bindings__(string *name*)  
+    Require an addon.node.  
+    This method is allowed to be required as `noda/bindings`.
+
 *	__noda.currentPackage__()  
     Return the object parsed from package.json which belongs to current package.
 

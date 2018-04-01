@@ -338,6 +338,8 @@ let downResolve = function(pathname) {
 };
 
 module.exports = {
+    bindings: require('./bindings'),
+
     currentPackage,
     inExists,
     inRead,
