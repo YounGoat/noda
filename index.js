@@ -158,11 +158,10 @@ let inRequire = function(subpath, nullIfNotFound) {
  * The subpath is relative to the home directory of the package in which the caller is located.
  * @param {string} subpath subpath relative to the home directory of the package in which the caller is located.
  */
-let inResolve = (subpath) => {
+let inResolve = function(...subpath) {
     // Find home directory of the package in which the caller is located.
     let dirname = getCallerPackageDir();
-
-    return path.join(dirname, subpath);
+    return path.join.apply(path, [ dirname ].concat(subpath));
 };
 
 /**
@@ -337,9 +336,17 @@ let downResolve = function(pathname) {
     throw new Error(`invalid order: ${order}`);
 };
 
+/**
+ * Return the root path of current package.
+ */
+let packageRoot = function() {
+    return inResolve('.');
+};
+
 module.exports = {
     bindings: require('./bindings'),
-
+    packageOf: require('./packageOf'),
+    
     currentPackage,
     inExists,
     inRead,
@@ -355,7 +362,7 @@ module.exports = {
 
     upResolve,
     downResolve,
-    
+
     'existsInPackage': inExists,
     'readInPackage': inRead,
     'requireInPackage': inRequire,

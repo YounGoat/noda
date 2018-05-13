@@ -44,6 +44,9 @@ Before read APIs, please understand that
     Require an addon.node.  
     This method is allowed to be required as `noda/bindings`.
 
+*   __noda.packageOf__(string *id*, Object *module*)  
+    Return the object parsed from package.json which belongs to the special package named *id* according to the view angle of special *module*.
+
 *	__noda.currentPackage__()  
     Return the object parsed from package.json which belongs to current package.
 
@@ -84,19 +87,19 @@ Before read APIs, please understand that
     Find sub-directory or file in descent directory and return the full path.
     The value of *order* may be `DFS` (means depth-first search) or `BFS` (means breadth-first search).
 
-*   __noda.existsInPackage__
+*   __noda.existsInPackage__  
     Alias of `noda.inExists`.
 
-*   __noda.readInPackage__
+*   __noda.readInPackage__  
     Alias of `noda.inRead`.
 
-*   __noda.requireInPackage__
+*   __noda.requireInPackage__  
     Alias of `noda.inRequire`.
 
-*   __noda.requireDirInPackage__
+*   __noda.requireDirInPackage__  
     Alias of `noda.inRequireDir`.
 
-*   __noda.resolveInPackage__
+*   __noda.resolveInPackage__  
     Alias of `noda.inResolve`.
 
 ##  Examples

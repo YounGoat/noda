@@ -2,8 +2,13 @@
 
 Notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning 2.0.0](http://semver.org/).
 
-##  [0.4.0] - April 1st, 2018 - BETA
+##  [0.4.0] - May 13th, 2018
 
+Developed since April 1st, 2018.
+
+*   `noda.packageRoot()` added.
+*   `noda.inResolve()` updated to accept more arguments as `path.resolve()` does.
+*   `noda.packageOf()` added.
 *   `noda.bindings()` added.
 
 ##	[0.3.0] - Feb 21st, 2018
