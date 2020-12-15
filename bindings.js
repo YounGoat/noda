@@ -7,10 +7,8 @@ const MODULE_REQUIRE = 1
 	/* NPM */
 	
 	/* in-package */
-	, getCallerFileName = require('./lib/getCallerFileName')
-    , getCallerPackageDir = require('./lib/getCallerPackageDir')
-    , getCallerDir = () => path.dirname(getCallerFileName(1))
-	;
+	, getCallerPackageDir = require('./lib/getCallerPackageDir')
+    ;
 
 function bindings(name) {
 	let dirname = getCallerPackageDir();

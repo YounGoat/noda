@@ -50,6 +50,9 @@ Before read APIs, please understand that
 *	__noda.currentPackage__()  
     Return the object parsed from package.json which belongs to current package.
 
+*   __noda.once__(Function *action*)  
+    Run specified function immediately when the code is first time reached.
+
 *	__noda.inExists__(string *subpath*, boolean *resolveAsModule*)  
     Judge whether file or directory exists. If __resolveAsModule__ set `true`, __subpath__ will be tentatively regarded as JS/JSON module path in the current package when the exact file not exists.
     This method is __synchronuous__.

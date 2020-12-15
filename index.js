@@ -16,9 +16,9 @@ const MODULE_REQUIRE = 1
 
     /* in-package */
     , findInDirectory = require('./lib/findInDirectory')
-    , getCallerFileName = require('./lib/getCallerFileName')
+    , getCaller = require('./lib/getCaller')
     , getCallerPackageDir = require('./lib/getCallerPackageDir')
-    , getCallerDir = () => path.dirname(getCallerFileName(1))
+    , getCallerDir = () => path.dirname(getCaller(1).filename)
     ;
 
 
@@ -343,6 +343,15 @@ let packageRoot = function() {
     return inResolve('.');
 };
 
+/**
+ * Return dirname, filename and lineno of the caller.
+ * @param  {int} [depth=0] 
+ */
+let whereami = function(depth) {
+    if (arguments.length === 0) depth = 0;
+    return getCallerPosition(depth);
+};
+
 module.exports = {
     bindings: require('./bindings'),
     packageOf: require('./packageOf'),
@@ -356,12 +365,16 @@ module.exports = {
     inResolve,
 
     nextRead,
+    upResolve,
+    downResolve,
     
+    // Hold, not released.
+//  whereami,
+
     osRequire,
     requireDir,
 
-    upResolve,
-    downResolve,
+    count: require('./count'),
 
     'existsInPackage': inExists,
     'readInPackage': inRead,

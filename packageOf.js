@@ -12,6 +12,7 @@ const MODULE_REQUIRE = 1
 
 let packageOf = function(id, mod) {
 	let packageJson = null;
+	if (!mod) mod = module;
 	
 	let pathname = require.resolve(id, mod.paths);
 	let dirname = fs.statSync(pathname).isDirectory() ? pathname : path.dirname(pathname);
