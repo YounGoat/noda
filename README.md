@@ -50,8 +50,18 @@ Before read APIs, please understand that
 *	__noda.currentPackage__()  
     Return the object parsed from package.json which belongs to current package.
 
-*   __noda.once__(Function *action*)  
-    Run specified function immediately when the code is first time reached.
+*   __noda.count__()  
+    Return how many times the function is called.  
+    You may prevent code from being executed duplicatedly by this funciton. E.g.
+    ```javascript
+    if (noda.count() == 1) {
+        // DO SOMETHING ONLY ONCE.
+    }
+
+    if (noda.count() <= 2) {
+        // DO SOMETHING ONLY TWICE.
+    }
+    ```
 
 *	__noda.inExists__(string *subpath*, boolean *resolveAsModule*)  
     Judge whether file or directory exists. If __resolveAsModule__ set `true`, __subpath__ will be tentatively regarded as JS/JSON module path in the current package when the exact file not exists.
